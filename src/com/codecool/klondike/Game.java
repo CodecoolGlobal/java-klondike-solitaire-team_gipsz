@@ -106,7 +106,7 @@ public class Game extends Pane {
     }
 
     /**
-     * If th stockPile is empty, and you click on the stockPile its refilled from the stockPile
+     * If th stockPile is empty, and you click on the stockPile its refilled from the discardPile
      */
     public void refillStockFromDiscard() {
         //TODO
