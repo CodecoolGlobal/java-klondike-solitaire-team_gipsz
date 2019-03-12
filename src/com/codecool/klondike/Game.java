@@ -190,15 +190,31 @@ public class Game extends Pane {
     }
 
     public void dealCards() {
+
         Iterator<Card> deckIterator = deck.iterator();
         //TODO
+
         deckIterator.forEachRemaining(card -> {
             stockPile.addCard(card);
             addMouseEventHandlers(card);
             getChildren().add(card);
         });
-
+        setCardsToTableau();
     }
+
+    /**
+     * Sets the cards to the tableaus at the init / cards dealing.
+     * The fisrt tableau has one card and the seventh tableau has seven card.
+     */
+    public void setCardsToTableau() {
+        for(int i=0; i < tableauPiles.size(); i++){
+            for(int j=i; j < tableauPiles.size(); j++) {
+                stockPile.getTopCard().moveToPile(tableauPiles.get(j));
+            }
+            tableauPiles.get(i).getTopCard().flip();
+        }
+    }
+
 
     public void setTableBackground(Image tableBackground) {
         setBackground(new Background(new BackgroundImage(tableBackground,
