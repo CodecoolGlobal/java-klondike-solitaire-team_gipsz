@@ -112,8 +112,8 @@ public class Game extends Pane {
         //TODO
         if(stockPile.isEmpty()){
             while (!discardPile.isEmpty()){
-                discardPile.getTopCard().moveToPile(stockPile);
                 discardPile.getTopCard().flip();
+                discardPile.getTopCard().moveToPile(stockPile);
             }
         }
         System.out.println("Stock refilled from discard pile.");
