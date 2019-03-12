@@ -179,7 +179,6 @@ public class Game extends Pane {
             getChildren().add(tableauPile);
         }
     }
-    int tableCounter = 0;
 
     public void dealCards() {
 
