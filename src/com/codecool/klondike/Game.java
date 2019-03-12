@@ -105,8 +105,17 @@ public class Game extends Pane {
         card.setOnMouseClicked(onMouseClickedHandler);
     }
 
+    /**
+     * If th stockPile is empty, and you click on the stockPile its refilled from the discardPile
+     */
     public void refillStockFromDiscard() {
         //TODO
+        if(stockPile.isEmpty()){
+            while (!discardPile.isEmpty()){
+                discardPile.getTopCard().flip();
+                discardPile.getTopCard().moveToPile(stockPile);
+            }
+        }
         System.out.println("Stock refilled from discard pile.");
     }
 
