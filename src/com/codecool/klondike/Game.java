@@ -193,7 +193,10 @@ public class Game extends Pane {
         setCardsToTableau();
     }
 
-
+    /**
+     * Sets the cards to the tableaus at the init / cards dealing.
+     * The fisrt tableau has one card and the seventh tableau has seven card.
+     */
     public void setCardsToTableau() {
         for(int i=0; i < tableauPiles.size(); i++){
             for(int j=i; j < tableauPiles.size(); j++) {
