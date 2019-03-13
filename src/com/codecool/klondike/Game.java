@@ -87,7 +87,12 @@ public class Game extends Pane {
         if (pile != null) {
             Pile cardInitialPile = card.getContainingPile();
             if (cardInitialPile.numOfCards() > 1) {
-                Card cardUnderDragged = cardInitialPile.getCards().get(cardInitialPile.numOfCards() - 2);
+                int cardIndex = -1;
+                for (int i=0; i < cardInitialPile.numOfCards(); i++) {
+                    if (cardInitialPile.getCards().get(i).equals(card)) cardIndex = i;
+                }
+
+                Card cardUnderDragged = cardInitialPile.getCards().get(cardIndex - 1);
 
                 if (cardUnderDragged.isFaceDown()) cardUnderDragged.flip();
             }
