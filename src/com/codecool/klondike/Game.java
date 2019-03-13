@@ -13,15 +13,13 @@ import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.Pane;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class Game extends Pane {
 
     private List<Card> deck = new ArrayList<>();
 
+    private Rank rank;
     private Pile stockPile;
     private Pile discardPile;
     private List<Pile> foundationPiles = FXCollections.observableArrayList();
@@ -49,6 +47,7 @@ public class Game extends Pane {
     private EventHandler<MouseEvent> stockReverseCardsHandler = e -> {
         refillStockFromDiscard();
     };
+
 
     private EventHandler<MouseEvent> onMousePressedHandler = e -> {
         dragStartX = e.getSceneX();
@@ -129,11 +128,61 @@ public class Game extends Pane {
         System.out.println("Stock refilled from discard pile.");
     }
 
+
     public boolean isMoveValid(Card card, Pile destPile) {
         //TODO
 
-        return true;
+
+        if(foundationPiles.contains(destPile)) {
+            return isFoundationMoveValid(card, destPile);
+        } else if(tableauPiles.contains(destPile)) {
+            return isTableauMoveValid(card, destPile);
+        }
+        return false;
     }
+
+
+    /**
+     * return a boolean value depend on the card moving to the foundation fields is Valid
+     * @param card
+     * @param destPile
+     * @return
+     */
+    public boolean isFoundationMoveValid(Card card, Pile destPile){
+        Rank topCardRank = null;
+        Suit topCardSuit = null;
+        try {
+            topCardRank = destPile.getTopCard().getRank();
+            topCardSuit = destPile.getTopCard().getSuit();
+        } catch (Exception e) {}
+
+
+        Rank[] ranks = Rank.values();
+        int topCardRankIndex = -1;
+        int cardRankIndex = -1;
+
+        for (int i = 0; i < ranks.length; i++) {
+            if (ranks[i] == topCardRank) {
+                topCardRankIndex = i;
+            }
+            if (ranks[i] == card.getRank()) {
+                cardRankIndex = i;
+            }
+        }
+
+
+        if ("ACE".equals(card.getRank().toString()) && topCardRankIndex + 1 == cardRankIndex ||
+                (topCardSuit == card.getSuit() && topCardRankIndex + 1 == cardRankIndex)) {
+            return true;
+        }
+        return false;
+    };
+
+
+    public boolean isTableauMoveValid(Card card, Pile destPile){
+        return true;
+    };
+
 
     private Pile getValidIntersectingPile(Card card, List<Pile> piles) {
         Pile result = null;
