@@ -177,32 +177,23 @@ public class Game extends Pane {
 
 
     /**
-     * return a boolean value depend on the card moving to the foundation fields is Valid
-     * @param card
-     * @param destPile
-     * @return
+     * Returns a boolean value depending on if the card can be moved to the foundation field
+     *
+     * @param card the card dragged by the mouse
+     * @param destPile the pile where the card is dropped to
+     * @return boolean value depending on if the card can be moved to the foundation field
      */
     public boolean isFoundationMoveValid(Card card, Pile destPile){
         Card topCard = destPile.getTopCard();
-        Rank topCardRank = (topCard == null) ? null : topCard.getRank();
-        Suit topCardSuit = (topCard == null) ? null : topCard.getSuit();
+        boolean noCardDestPile = (topCard == null);
 
-        Rank nextRank = null;
-        Rank[] ranks = Rank.values();
-        boolean isSequential = false;
+        if (noCardDestPile) return Rank.ACE.equals(card.getRank());
+        else {
+            boolean isSequential = topCard.getSuit().equals(card.getSuit())
+                                   && topCard.getRank().getNextRank().equals(card.getRank());
 
-        if (topCard != null) {
-            for (int i = 0; i < ranks.length; i++) { if (topCardRank.equals(ranks[i])&& ( ranks[i] != Rank.KING)) nextRank = ranks[i + 1]; }
+            return isSequential;
         }
-
-        boolean isFirstCardAce = Rank.ACE.equals(card.getRank()) && topCard == null;
-        if (nextRank != null){
-            isSequential = topCardSuit == card.getSuit() && nextRank.equals(card.getRank());
-
-        }
-
-        if (isFirstCardAce | isSequential) {return true;}
-        else {return false;}
     };
 
 
