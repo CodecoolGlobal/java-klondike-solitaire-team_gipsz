@@ -57,25 +57,34 @@ public class Game extends Pane {
     };
 
     private EventHandler<MouseEvent> onMouseDraggedHandler = e -> {
-        Card card = (Card) e.getSource();
-        Pile activePile = card.getContainingPile();
-        boolean isStockUnderCard = activePile.getPileType().equals(Pile.PileType.DISCARD) && !card.equals(activePile.getTopCard());
+        draggedCards.clear();
+        boolean draggable = false;
+        Card clickedCard = (Card) e.getSource();
+        Pile activePile = clickedCard.getContainingPile();
+        boolean isStockUnderCard = activePile.getPileType().equals(Pile.PileType.DISCARD) && !clickedCard.equals(activePile.getTopCard());
 
-        if ( isStockUnderCard || card.isFaceDown())
+        if ( isStockUnderCard || clickedCard.isFaceDown())
+
             return;
+
         double offsetX = e.getSceneX() - dragStartX;
         double offsetY = e.getSceneY() - dragStartY;
 
-        draggedCards.clear();
-        draggedCards.add(card);
+        for(Card card : activePile.getCards()){
+            if(clickedCard == card || draggable){
+                draggable = true;
+                draggedCards.add(card);
+            }
+        }
 
-        card.getDropShadow().setRadius(20);
-        card.getDropShadow().setOffsetX(10);
-        card.getDropShadow().setOffsetY(10);
-
-        card.toFront();
-        card.setTranslateX(offsetX);
-        card.setTranslateY(offsetY);
+        for(Card draggedCard : draggedCards){
+            draggedCard.getDropShadow().setRadius(20);
+            draggedCard.getDropShadow().setOffsetX(10);
+            draggedCard.getDropShadow().setOffsetY(10);
+            draggedCard.toFront();
+            draggedCard.setTranslateX(offsetX);
+            draggedCard.setTranslateY(offsetY);
+        }
     };
 
     private EventHandler<MouseEvent> onMouseReleasedHandler = e -> {
