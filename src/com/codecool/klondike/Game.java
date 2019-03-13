@@ -52,15 +52,19 @@ public class Game extends Pane {
             card.moveToPile(destPile);
 
             if (cardInitialPile.numOfCards() > 1) {
+
                 int cardIndex = -1;
-                for (int i=0; i < cardInitialPile.numOfCards(); i++) {
-                    if (cardInitialPile.getCards().get(i).equals(card)) cardIndex = i;
+
+                for (int i = 0; i < cardInitialPile.numOfCards(); i++) {
+                    if (!cardInitialPile.getCards().get(i).equals(card)) cardIndex = i;
                 }
+                Card cardUnderDragged = (cardIndex -1  >= 0) ? cardInitialPile.getCards().get(cardIndex) : null;
 
-                Card cardUnderDragged = (cardIndex-1 >= 0) ? cardInitialPile.getCards().get(cardIndex - 1) : null;
-
-                if (cardUnderDragged != null && cardUnderDragged.isFaceDown()) cardUnderDragged.flip();
+                if (cardUnderDragged != null && cardUnderDragged.isFaceDown() && card.getContainingPile() != cardInitialPile){
+                    cardUnderDragged.flip();
+                }
             }
+
         }
 
 
