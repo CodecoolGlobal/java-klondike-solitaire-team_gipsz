@@ -51,7 +51,6 @@ public class Game extends Pane {
         refillStockFromDiscard();
     };
 
-
     private EventHandler<MouseEvent> onMousePressedHandler = e -> {
         dragStartX = e.getSceneX();
         dragStartY = e.getSceneY();
@@ -62,8 +61,10 @@ public class Game extends Pane {
         boolean draggable = false;
         Card clickedCard = (Card) e.getSource();
         Pile activePile = clickedCard.getContainingPile();
+        boolean isStockUnderCard = activePile.getPileType().equals(Pile.PileType.DISCARD) && !clickedCard.equals(activePile.getTopCard());
 
-        if (activePile.getPileType() == Pile.PileType.STOCK || clickedCard.isFaceDown())
+        if ( isStockUnderCard || clickedCard.isFaceDown())
+
             return;
 
         double offsetX = e.getSceneX() - dragStartX;
@@ -90,18 +91,11 @@ public class Game extends Pane {
         if (draggedCards.isEmpty())
             return;
         Card card = (Card) e.getSource();
-        allPiles.clear();
-        allPiles.addAll(foundationPiles);
-        allPiles.addAll(tableauPiles);
         Pile pile = getValidIntersectingPile(card, allPiles);
         //TODO
-
-
         if (pile != null) {
             handleValidMove(card, pile);
-        } /*else if (pile){
-
-        }*/
+        }
         else {
             draggedCards.forEach(MouseUtil::slideBack);
             draggedCards.clear();
@@ -140,7 +134,6 @@ public class Game extends Pane {
         System.out.println("Stock refilled from discard pile.");
     }
 
-
     public boolean isMoveValid(Card card, Pile destPile) {
         //TODO
 
@@ -161,33 +154,21 @@ public class Game extends Pane {
      * @return
      */
     public boolean isFoundationMoveValid(Card card, Pile destPile){
-        Rank topCardRank = null;
-        Suit topCardSuit = null;
-        try {
-            topCardRank = destPile.getTopCard().getRank();
-            topCardSuit = destPile.getTopCard().getSuit();
-        } catch (Exception e) {}
+        Card topCard = destPile.getTopCard();
+        Rank topCardRank = (topCard == null) ? null : topCard.getRank();
+        Suit topCardSuit = (topCard == null) ? null : topCard.getSuit();
 
-
+        Rank nextRank = null;
         Rank[] ranks = Rank.values();
-        int topCardRankIndex = -1;
-        int cardRankIndex = -1;
-
-        for (int i = 0; i < ranks.length; i++) {
-            if (ranks[i] == topCardRank) {
-                topCardRankIndex = i;
-            }
-            if (ranks[i] == card.getRank()) {
-                cardRankIndex = i;
-            }
+        if (topCard != null) {
+            for (int i = 0; i < ranks.length; i++) { if (topCardRank.equals(ranks[i])) nextRank = ranks[i + 1]; }
         }
 
+        boolean isFirstCardAce = Rank.ACE.equals(card.getRank()) && topCard == null;
+        boolean isSequential = topCardSuit == card.getSuit() && nextRank.equals(card.getRank());
 
-        if ("ACE".equals(card.getRank().toString()) && topCardRankIndex + 1 == cardRankIndex ||
-                (topCardSuit == card.getSuit() && topCardRankIndex + 1 == cardRankIndex)) {
-            return true;
-        }
-        return false;
+        if (isFirstCardAce | isSequential) {return true;}
+        else {return false;}
     };
 
 
@@ -251,6 +232,7 @@ public class Game extends Pane {
             foundationPile.setLayoutY(20);
             foundationPiles.add(foundationPile);
             getChildren().add(foundationPile);
+            allPiles.add(foundationPile);
         }
         for (int i = 0; i < 7; i++) {
             Pile tableauPile = new Pile(Pile.PileType.TABLEAU, "Tableau " + i, TABLEAU_GAP);
@@ -259,6 +241,7 @@ public class Game extends Pane {
             tableauPile.setLayoutY(275);
             tableauPiles.add(tableauPile);
             getChildren().add(tableauPile);
+            allPiles.add(tableauPile);
         }
     }
 
