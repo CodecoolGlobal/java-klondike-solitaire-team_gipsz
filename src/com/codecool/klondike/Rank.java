@@ -19,4 +19,15 @@ public enum Rank {
         return toString().toLowerCase();
     }
 
+    public Rank getNextRank() {
+        Rank nextRank = null;
+
+        Rank[] allRanks = Rank.values();
+
+        for (int i = 0; i < allRanks.length-1; i++) {
+            if (this.equals(allRanks[i])) nextRank = allRanks[i + 1];
+        }
+
+        return nextRank;
+    }
 }
