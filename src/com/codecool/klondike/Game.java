@@ -13,6 +13,7 @@ import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.Pane;
 
+import javax.swing.*;
 import java.util.*;
 
 import static com.codecool.klondike.Card.isOppositeColor;
@@ -113,10 +114,25 @@ public class Game extends Pane {
             draggedCards.forEach(MouseUtil::slideBack);
             draggedCards.clear();
         }
+
+        if (isGameWon()) {
+            AlertBox.popUp("You won", "CONGRATULATIONS, YOU WON!");
+
+        }
+
     };
 
     public boolean isGameWon() {
         //TODO
+        int sumNumOfCards = 0;
+
+        for (Pile pile : foundationPiles) {
+            sumNumOfCards += pile.numOfCards();
+        }
+
+        if (sumNumOfCards == 1) {
+            return true;
+        }
         return false;
     }
 
