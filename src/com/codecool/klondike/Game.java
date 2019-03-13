@@ -103,9 +103,9 @@ public class Game extends Pane {
                     if (cardInitialPile.getCards().get(i).equals(card)) cardIndex = i;
                 }
 
-                Card cardUnderDragged = cardInitialPile.getCards().get(cardIndex - 1);
+                Card cardUnderDragged = (cardIndex-1 >= 0) ? cardInitialPile.getCards().get(cardIndex - 1) : null;
 
-                if (cardUnderDragged.isFaceDown()) cardUnderDragged.flip();
+                if (cardUnderDragged != null && cardUnderDragged.isFaceDown()) cardUnderDragged.flip();
             }
             handleValidMove(card, pile);
         }
