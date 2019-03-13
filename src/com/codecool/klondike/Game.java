@@ -38,7 +38,33 @@ public class Game extends Pane {
 
     private EventHandler<MouseEvent> onMouseClickedHandler = e -> {
         Card card = (Card) e.getSource();
-        if (card.getContainingPile().getPileType() == Pile.PileType.STOCK && card.getContainingPile().getTopCard() == card) {
+
+        boolean forTableau = card.getContainingPile().getPileType() == Pile.PileType.TABLEAU && card.getContainingPile().getTopCard() == card &&
+                e.getClickCount() == 2;
+
+        boolean forDiscard = card.getContainingPile().getPileType() == Pile.PileType.DISCARD && card.getContainingPile().getTopCard() == card &&
+                e.getClickCount() == 2;
+
+        if(forTableau || forDiscard){
+            Pile cardInitialPile = card.getContainingPile();
+
+            Pile destPile = getDestPile(card,foundationPiles);
+            card.moveToPile(destPile);
+
+            if (cardInitialPile.numOfCards() > 1) {
+                int cardIndex = -1;
+                for (int i=0; i < cardInitialPile.numOfCards(); i++) {
+                    if (cardInitialPile.getCards().get(i).equals(card)) cardIndex = i;
+                }
+
+                Card cardUnderDragged = (cardIndex-1 >= 0) ? cardInitialPile.getCards().get(cardIndex - 1) : null;
+
+                if (cardUnderDragged != null && cardUnderDragged.isFaceDown()) cardUnderDragged.flip();
+            }
+        }
+
+
+        else if (card.getContainingPile().getPileType() == Pile.PileType.STOCK && card.getContainingPile().getTopCard() == card) {
             card.moveToPile(discardPile);
             card.flip();
             card.setMouseTransparent(false);
@@ -48,6 +74,7 @@ public class Game extends Pane {
             card.flip();
         }
     };
+
 
     private EventHandler<MouseEvent> stockReverseCardsHandler = e -> {
         refillStockFromDiscard();
@@ -66,7 +93,6 @@ public class Game extends Pane {
         boolean isStockUnderCard = activePile.getPileType().equals(Pile.PileType.DISCARD) && !clickedCard.equals(activePile.getTopCard());
 
         if ( isStockUnderCard || clickedCard.isFaceDown())
-
             return;
 
         double offsetX = e.getSceneX() - dragStartX;
@@ -117,6 +143,7 @@ public class Game extends Pane {
 
     public boolean isGameWon() {
         //TODO
+
         return false;
     }
 
@@ -232,6 +259,16 @@ public class Game extends Pane {
         }
         return result;
     }
+
+
+    private Pile getDestPile(Card card, List<Pile> foundationPiles){
+        for(Pile pile : foundationPiles){
+            if(isFoundationMoveValid(card, pile))
+                return pile;
+        }
+        return card.getContainingPile();
+    };
+
 
     private boolean isOverPile(Card card, Pile pile) {
         if (pile.isEmpty())
