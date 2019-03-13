@@ -85,6 +85,12 @@ public class Game extends Pane {
         Pile pile = getValidIntersectingPile(card, allPiles);
         //TODO
         if (pile != null) {
+            Pile cardInitialPile = card.getContainingPile();
+            if (cardInitialPile.numOfCards() > 1) {
+                Card cardUnderDragged = cardInitialPile.getCards().get(cardInitialPile.numOfCards() - 2);
+
+                if (cardUnderDragged.isFaceDown()) cardUnderDragged.flip();
+            }
             handleValidMove(card, pile);
         }
         else {
