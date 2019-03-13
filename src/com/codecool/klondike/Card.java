@@ -78,6 +78,9 @@ public class Card extends ImageView {
     }
 
     public static boolean isOppositeColor(Card card1, Card card2) {
+        if (card1 == null || card2 == null) {
+            return false;
+        }
         boolean isCard1Red = card1.suit.equals(Suit.HEARTS) | card1.suit.equals(Suit.DIAMONDS);
         boolean isCard2Red = card2.suit.equals(Suit.CLUBS) | card2.suit.equals(Suit.SPADES);
 

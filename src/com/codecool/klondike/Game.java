@@ -15,6 +15,8 @@ import javafx.scene.layout.Pane;
 
 import java.util.*;
 
+import static com.codecool.klondike.Card.isOppositeColor;
+
 public class Game extends Pane {
 
     private List<Card> deck = new ArrayList<>();
@@ -149,12 +151,17 @@ public class Game extends Pane {
 
         Rank nextRank = null;
         Rank[] ranks = Rank.values();
+        boolean isSequential = false;
+
         if (topCard != null) {
-            for (int i = 0; i < ranks.length; i++) { if (topCardRank.equals(ranks[i])) nextRank = ranks[i + 1]; }
+            for (int i = 0; i < ranks.length; i++) { if (topCardRank.equals(ranks[i])&& ( ranks[i] != Rank.KING)) nextRank = ranks[i + 1]; }
         }
 
         boolean isFirstCardAce = Rank.ACE.equals(card.getRank()) && topCard == null;
-        boolean isSequential = topCardSuit == card.getSuit() && nextRank.equals(card.getRank());
+        if (nextRank != null){
+            isSequential = topCardSuit == card.getSuit() && nextRank.equals(card.getRank());
+
+        }
 
         if (isFirstCardAce | isSequential) {return true;}
         else {return false;}
@@ -162,7 +169,34 @@ public class Game extends Pane {
 
 
     public boolean isTableauMoveValid(Card card, Pile destPile){
-        return true;
+
+        Card topCard = destPile.getTopCard();
+        Rank topCardRank = (topCard == null) ? null : topCard.getRank();
+
+        Rank[] ranks = Rank.values();
+
+        Rank nextRank = null;
+        boolean isSequential = false;
+
+        if (topCard != null) {
+            for (int i = 0; i < ranks.length; i++) {
+                if (topCardRank.equals(ranks[i]) && ( ranks[i] != Rank.ACE)) {
+                    nextRank = ranks[i - 1];
+                }
+            }
+        }
+
+        boolean isFirstCardKing = Rank.KING.equals(card.getRank()) && topCard == null;
+        if (nextRank != null){
+            isSequential = nextRank.equals(card.getRank()) && Card.isOppositeColor(card, topCard);
+        }
+
+        if (isFirstCardKing || isSequential) {
+            return true;
+        }
+        else {
+            return false;
+        }
     };
 
 
