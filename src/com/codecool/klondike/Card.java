@@ -106,15 +106,15 @@ public class Card extends ImageView {
     /**
      * For every card it assigns an image by putting it's id as key and image as value in a Map
      */
-    public static void loadCardImages() {
-        cardBackImage = new Image("card_images/card_back.png");
+    public static void loadCardImages(String source) {
+        cardBackImage = new Image(source + "card_back.png");
         String suitName = "";
         for (Suit suit : Suit.values()) {
             suitName = suit.lowerCaseName();
             for (Rank rank : Rank.values()) {
                 String cardName = suitName + rank.lowerCaseRank();
                 String cardId = "S" + suit.lowerCaseName() + "R" + rank.lowerCaseRank();
-                String imageFileName = "card_images/" + cardName + ".png";
+                String imageFileName = source + cardName + ".png";
                 cardFaceImages.put(cardId, new Image(imageFileName));
             }
         }
